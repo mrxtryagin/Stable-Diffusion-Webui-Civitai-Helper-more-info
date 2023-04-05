@@ -425,6 +425,8 @@ def dl_model_by_input(model_info:dict, model_type:str, subfolder_str:str, versio
         output = "Model downloaded, but failed to get version info, check console log for detail. Model saved to: " + filepath
         util.printD(output)
         return output
+    #inject model_info into version ver
+    version_info['_model_info'] = model_info
 
     # write version info to file
     base, ext = os.path.splitext(filepath)

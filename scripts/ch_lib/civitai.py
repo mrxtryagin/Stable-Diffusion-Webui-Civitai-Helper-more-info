@@ -183,6 +183,8 @@ def get_version_info_by_model_id(id:str) -> dict:
 
     # get version info
     version_info = get_version_info_by_version_id(str(version_id))
+    #inject model_info into version ver
+    version_info['_model_info'] = model_info
     if not version_info:
         util.printD(f"Failed to get version info by version_id: {version_id}")
         return
