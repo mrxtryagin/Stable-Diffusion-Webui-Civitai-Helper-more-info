@@ -97,9 +97,9 @@ def add_trigger_words(msg):
         util.printD(f"trainedWords from info file for {model_type} {search_term} is empty")
         return [prompt, prompt]
     # model_info_itself 
-    model_info_base = civitai.get_model_info_base(search_term)
+    model_info_base = civitai.get_model_base_name(search_term)
     
-    util.printD(f"get_model_info_base is {model_info_base}")
+    util.printD(f"get_model_base_name is {model_info_base}")
     
     trigger_words_arr = []
     extra_words_arr = []
