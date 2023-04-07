@@ -219,7 +219,14 @@ def load_model_info_by_search_term(model_type, search_term):
     
     return model.load_model_info(model_info_filepath)
 
-
+def get_model_info_base(search_term):
+    # search_term = subfolderpath + model name + ext. And it always start with a / even there is no sub folder
+    base, ext = os.path.splitext(search_term)
+    model_info_base = base
+    if base[:1] == "/":
+        model_info_base = base[1:]
+    return model_info_base
+    
 
 
 

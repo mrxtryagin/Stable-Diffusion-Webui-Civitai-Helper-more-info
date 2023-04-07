@@ -77,7 +77,7 @@ def add_trigger_words(msg):
     model_type = result["model_type"]
     search_term = result["search_term"]
     prompt = result["prompt"]
-
+    
 
     model_info = civitai.load_model_info_by_search_term(model_type, search_term)
     if not model_info:
@@ -96,20 +96,39 @@ def add_trigger_words(msg):
     if len(trainedWords) == 0:
         util.printD(f"trainedWords from info file for {model_type} {search_term} is empty")
         return [prompt, prompt]
+    # model_info_itself 
+    model_info_base = civitai.get_model_info_base(search_term)
     
-    # get ful trigger words
-    trigger_words = ""
+    util.printD(f"get_model_info_base is {model_info_base}")
+    
+    trigger_words_arr = []
+    extra_words_arr = []
     for word in trainedWords:
-        trigger_words = trigger_words + word + ", "
-
-    new_prompt = prompt + " " + trigger_words
+        if word:
+            if word.startswith("<"):
+                extra_words_arr.append(word)
+            else:
+                trigger_words_arr.append(word)
+    if not extra_words_arr:
+        extra_words_arr.append(f"<{model_type}:{model_info_base}:1>")
+    # extra_words_arr + trigger_words_arr
+    total_arr = extra_words_arr + trigger_words_arr
+    trigger_words = ", ".join(total_arr)
+    
+    # # get ful trigger words
+    # trigger_words = ""
+    # for word in trainedWords:
+    #     trigger_words = trigger_words + word + ", "
+    
     util.printD("trigger_words: " + trigger_words)
     util.printD("prompt: " + prompt)
+    new_prompt = prompt + " " + trigger_words
     util.printD("new_prompt: " + new_prompt)
+    
 
     util.printD("End add_trigger_words")
 
-    # add to prompt
+    # append to prompt
     return [new_prompt, new_prompt]
 
 
