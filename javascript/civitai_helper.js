@@ -285,6 +285,50 @@ function use_preview_prompt(event, model_type, search_term){
 }
 
 
+function open_local_info_file(event, model_type, search_term){
+    console.log("start open_local_info_file");
+
+    //get hidden components of extension 
+    let js_use_preview_prompt_btn = gradioApp().getElementById("ch_js_open_local_info_file_btn");
+    if (!js_use_preview_prompt_btn) {
+        return
+    }
+
+    //msg to python side
+    let msg = {
+        "action": "",
+        "model_type": "",
+        "search_term": "",
+        "prompt": "",
+        "neg_prompt": "",
+    }
+
+    msg["action"] = "use_preview_prompt";
+    msg["model_type"] = model_type;
+    msg["search_term"] = search_term;
+
+    // get active prompt
+    let act_prompt = getActivePrompt();
+    msg["prompt"] = act_prompt.value;
+
+    // get active neg prompt
+    let neg_prompt = getActiveNegativePrompt();
+    msg["neg_prompt"] = neg_prompt.value;
+
+    // fill to msg box
+    send_ch_py_msg(msg)
+
+    //click hidden button
+    js_use_preview_prompt_btn.click();
+
+    console.log("end open_local_info_file");
+
+    event.stopPropagation()
+    event.preventDefault()
+
+}
+
+
 
 // download model's new version into SD at python side
 function ch_dl_model_new_version(event, model_path, version_id, download_url){
@@ -661,8 +705,8 @@ onUiLoaded(() => {
                         use_preview_prompt_node.style.position = btn_thumb_pos;
                         use_preview_prompt_node.style.backgroundImage = btn_thumb_backgroundImage;
                     }
-                    use_preview_prompt_node.title = "Use prompt from preview image";
-                    use_preview_prompt_node.setAttribute("onclick","use_preview_prompt(event, '"+model_type+"', '"+search_term+"')");
+                    use_preview_prompt_node.title = "Open Local Info File";
+                    use_preview_prompt_node.setAttribute("onclick","open_local_info_file(event, '"+model_type+"', '"+search_term+"')");
 
                     //add to card
                     ul_node.appendChild(open_url_node);
