@@ -219,6 +219,31 @@ def load_model_info_by_search_term(model_type, search_term):
     
     return model.load_model_info(model_info_filepath)
 
+
+
+def get_model_info_local_file_path(model_type,search_term):
+    util.printD(f"will to find model local_file_path from search_term=[{search_term}] model_type = [{model_type}]...")
+    if model_type not in model.folders.keys():
+        util.printD("unknow model type: " + model_type)
+        return
+    
+    # search_term = subfolderpath + model name + ext. And it always start with a / even there is no sub folder
+    base, ext = os.path.splitext(search_term)
+    model_info_base = base
+    if base[:1] == "/":
+        model_info_base = base[1:]
+
+    model_folder = model.folders[model_type]
+    model_info_filename = model_info_base + suffix + model.info_ext
+    model_info_filepath = os.path.join(model_folder, model_info_filename)
+
+    if not os.path.isfile(model_info_filepath):
+        util.printD(f"can not find model_type=[{model_type}] search_term=[{search_term}]'s local_file_path")
+        return
+    util.printD(f"model_type=[{model_type}] search_term=[{search_term}] ==> {model_info_filepath}")
+    return model_info_filepath
+
+
 def get_model_base_name(search_term):
     # forExample /a/ee.log => ee
     base,ext = os.path.splitext(search_term)

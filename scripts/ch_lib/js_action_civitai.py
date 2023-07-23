@@ -4,6 +4,8 @@ import os
 import json
 import requests
 import webbrowser
+import traceback
+import subprocess
 from . import util
 from . import model
 from . import civitai
@@ -193,6 +195,33 @@ def use_preview_image_prompt(msg):
     util.printD("End use_preview_image_prompt")
     
     return [preview_prompt, preview_neg_prompt, preview_prompt, preview_neg_prompt]
+
+
+def open_local_info_file(msg):
+    util.printD("Start open_local_info_file")
+
+    result = msg_handler.parse_js_msg(msg)
+    if not result:
+        util.printD("Parsing js ms failed")
+        return
+    
+    model_type = result["model_type"]
+    search_term = result["search_term"]
+    prompt = result["prompt"]
+    neg_prompt = result["neg_prompt"]
+    # util.printD(f'model_type: {model_type} search_term: {search_term} ')
+    # util.printD(f'prompt: {prompt} neg_prompt: {neg_prompt} ')
+    local_file_path = civitai.get_model_info_local_file_path(model_type=model_type,search_term=search_term)
+    normal_path = os.path.normpath(local_file_path)
+    try:
+        util.printD(f"normal_path:{normal_path}")
+        # os.startfile(normal_path)
+        subprocess.run(["start", normal_path], check=True, shell=True)
+    except Exception as e:
+        traceback.print_exc()
+        util.printD(f"open file {normal_path} error please contact administrator!")
+    return None
+
 
 
 # download model's new verson by model path, version id and download url
